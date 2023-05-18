@@ -46,7 +46,7 @@ function Log({
 }: TimeLog["logs"][number]) {
   return (
     <div key={id} className="space-y-4 rounded-lg bg-[#222] p-4">
-      <div className="flex justify-between">
+      <div className="flex justify-between ">
         {description ? (
           <h2>{description}</h2>
         ) : (
@@ -55,7 +55,6 @@ function Log({
         <div>{duration}</div>
       </div>
       <div className="flex items-center justify-between">
-        <div>{distractions} distractions</div>
         <MoodAvatar {...mood} />
       </div>
     </div>

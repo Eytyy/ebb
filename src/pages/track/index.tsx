@@ -10,7 +10,6 @@ import TrackLayout from "~/components/track/layout";
 import type { DistractionProps } from "~/components/time/distractionView";
 import TimeWidget from "~/components/time/widget";
 import TimeList from "~/components/time/list";
-import TimePatterns from "~/components/time/patterns";
 import Submitting from "~/components/time/submitting";
 
 export default function TimePage() {
@@ -94,7 +93,6 @@ export default function TimePage() {
           />
         </div>
       )}
-      {view === "patterns" && <TimePatterns />}
       {view === "list" && <TimeList />}
     </TrackLayout>
   );
