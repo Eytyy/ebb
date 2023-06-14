@@ -1,28 +1,8 @@
 import type { Mood, TimeLog } from "@prisma/client";
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const tracksRouter = createTRPCRouter({
-  getTimeLogType: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.timeLogType.findMany({
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-  }),
-  getMoods: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.mood.findMany({
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-  }),
   getTimeLogsByDay: protectedProcedure.query(async ({ ctx }) => {
     const logs = await ctx.prisma.$queryRaw<
       {
@@ -71,27 +51,27 @@ export const tracksRouter = createTRPCRouter({
   createTimeLog: protectedProcedure
     .input(
       z.object({
+        activityId: z.string(),
         description: z.string(),
         start: z.date(),
         end: z.date(),
-        timeLogTypeId: z.string(),
+        timeLogType: z.string().optional(),
         moodId: z.string(),
         distractions: z.array(
           z.object({
-            text: z.string(),
             start: z.date(),
             end: z.date(),
+            text: z.string(),
             moodId: z.string(),
           })
         ),
       })
     )
     .mutation(({ ctx, input }) => {
-      console.log(input.start);
       return ctx.prisma.timeLog.create({
         data: {
           description: input.description,
-          timeLogTypeId: input.timeLogTypeId,
+          activityId: input.activityId,
           start: input.start,
           end: input.end,
           userId: ctx.session.user.id,

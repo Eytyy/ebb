@@ -3,7 +3,7 @@ import { MoodAvatar } from "../mood";
 
 type TimeLog = RouterOutputs["tracks"]["getTimeLogsByDay"][number];
 
-export default function TimeList() {
+export default function TimerList() {
   const { data } = api.tracks.getTimeLogsByDay.useQuery();
   console.log(data);
   return (

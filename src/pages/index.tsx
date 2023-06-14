@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session) {
     return {
       redirect: {
-        destination: "/track",
+        destination: "/dashboard",
         permanent: false,
       },
     };

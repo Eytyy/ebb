@@ -1,4 +1,4 @@
-type MoodProps = {
+export type MoodProps = {
   id: string;
   name: string;
   onClick: (id: string) => void;

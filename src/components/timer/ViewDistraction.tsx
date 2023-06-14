@@ -1,7 +1,7 @@
 import { CgClose } from "react-icons/cg";
 import { useCallback, useRef, useMemo } from "react";
 import Mood from "../mood";
-
+import { type Variants, motion } from "framer-motion";
 type Props = {
   time: string;
   moods?: { id: string; name: string }[];
@@ -10,13 +10,18 @@ type Props = {
 };
 
 export type DistractionProps = {
-  text: string;
   start: Date;
   end: Date;
   moodId: string;
+  text: string;
 };
 
-export default function DistractionView({ time, moods, close, add }: Props) {
+const variants: Variants = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.05 } },
+};
+
+export default function ViewDistraction({ time, moods, add, close }: Props) {
   const start = useMemo(() => new Date(), []);
   const input = useRef<HTMLTextAreaElement | null>(null);
 
@@ -36,7 +41,12 @@ export default function DistractionView({ time, moods, close, add }: Props) {
   );
 
   return (
-    <div className="grid h-full w-full grid-rows-[min-content,1fr,min-content] gap-8">
+    <motion.div
+      className="mx-auto grid max-w-5xl grid-cols-4 gap-8"
+      variants={variants}
+      initial="initial"
+      animate="animate"
+    >
       <h1>{time}</h1>
       <div className="grid grid-rows-[min-content,1fr] gap-4">
         <label htmlFor="note" className="text-4xl font-bold">
@@ -58,6 +68,6 @@ export default function DistractionView({ time, moods, close, add }: Props) {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
