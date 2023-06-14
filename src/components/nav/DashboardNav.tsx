@@ -1,4 +1,8 @@
 import React from "react";
+import { motion } from "framer-motion";
+
+import { useApp } from "~/context/app";
+
 import {
   BottomLeftBtn,
   BottomRightBtn,
@@ -8,6 +12,13 @@ import {
 import Circle from "./QuickCaptureBtn";
 
 export default function DashboardNav() {
+  const { dispatch, state } = useApp();
+  const { isNavOpen } = state;
+
+  function toggleMenu() {
+    dispatch({ type: "TOGGLE_MENU" });
+  }
+
   return (
     <>
       <TopLeftBtn>
@@ -20,8 +31,18 @@ export default function DashboardNav() {
           <Circle />
         </button>
       </TopRightBtn>
-      <BottomLeftBtn>M</BottomLeftBtn>
-      <BottomRightBtn>+</BottomRightBtn>
+      <BottomLeftBtn>
+        <motion.button
+          role="button"
+          whileTap={{
+            scale: 0.9,
+          }}
+          onClick={toggleMenu}
+        >
+          {isNavOpen ? "Close" : "Menu"}
+        </motion.button>
+      </BottomLeftBtn>
+      <BottomRightBtn>New</BottomRightBtn>
     </>
   );
 }

@@ -15,7 +15,7 @@ export const BottomLeftBtn = ({
 }: PropsWithChildren<{
   solid?: boolean;
 }>) => {
-  return <Btn className="bottom-16 left-20">{children}</Btn>;
+  return <Btn className="bottom-16 left-20 z-20">{children}</Btn>;
 };
 
 export const BottomRightBtn = ({

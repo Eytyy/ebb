@@ -1,7 +1,6 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { Inter } from "next/font/google";
 
 import { api } from "~/utils/api";
 
@@ -9,8 +8,7 @@ import "~/styles/globals.css";
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import AppProvider from "~/context/app";
-
-const inter = Inter({ subsets: ["latin"] });
+import AppLayout from "~/components/layout";
 
 const MyApp: AppType<{ session: Session | null; title: string }> = ({
   Component,
@@ -22,9 +20,9 @@ const MyApp: AppType<{ session: Session | null; title: string }> = ({
     <SessionProvider session={session}>
       <AnimatePresence mode="wait">
         <AppProvider>
-          <div className={inter.className}>
+          <AppLayout>
             <Component key={router.asPath} {...pageProps} />
-          </div>
+          </AppLayout>
         </AppProvider>
       </AnimatePresence>
     </SessionProvider>

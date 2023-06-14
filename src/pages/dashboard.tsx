@@ -3,7 +3,6 @@ import React from "react";
 import { requireAuth } from "~/requireAuth";
 import { type RouterOutputs, api } from "~/utils/api";
 
-import AppLayout from "~/components/layout";
 import DashboardNav from "~/components/nav/DashboardNav";
 import Timer from "~/components/timer";
 import ActivitiesList from "~/components/ActivitiesList";
@@ -70,7 +69,7 @@ export default function Dashboard() {
   );
 
   return (
-    <AppLayout>
+    <>
       {view === "list" && (
         <>
           <DashboardNav />
@@ -96,7 +95,7 @@ export default function Dashboard() {
           }
         />
       )}
-    </AppLayout>
+    </>
   );
 }
 

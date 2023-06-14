@@ -19,14 +19,14 @@ export default function Activity({ slug }: Props) {
   }
 
   return (
-    <LayoutInner>
+    <>
       <ActivityNav title={activity.name} />
       <main className={`mx-auto h-full max-w-5xl space-y-4 px-24`}>
         {activity.timeLogs.map((timeLog) => {
           return <LogItem key={timeLog.id} {...timeLog} />;
         })}
       </main>
-    </LayoutInner>
+    </>
   );
 }
 
