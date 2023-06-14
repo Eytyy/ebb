@@ -28,12 +28,15 @@ export default function ViewMain({ time }: MainViewProps) {
           animate={{
             x: 0,
             y: 0,
-            scale: 1,
+            scale: [1, 0.9],
             transition: {
               duration: 0.5,
               ease: "easeInOut",
               scale: {
-                delay: 0.5,
+                duration: 1,
+                delay: 1,
+                repeat: Infinity,
+                repeatType: "reverse",
               },
             },
           }}
