@@ -31,19 +31,17 @@ export default function ViewSubmission({ title, moods, onSubmit }: Props) {
       <SubmissionNav submit={submit} moods={moods} title={title} />
       {moods && (
         <motion.div
-          className="mx-auto grid max-w-5xl"
+          className="mx-auto h-full max-w-5xl"
           variants={variants}
           initial="initial"
           animate="animate"
         >
-          <div className="grid grid-rows-[min-content,1fr] gap-4">
-            <textarea
-              ref={desc}
-              id="desc"
-              placeholder="what where you doing?"
-              className="bg-transparent text-2xl outline-none"
-            />
-          </div>
+          <textarea
+            ref={desc}
+            id="desc"
+            placeholder="what where you doing?"
+            className="h-full w-full bg-transparent text-2xl outline-none"
+          />
         </motion.div>
       )}
     </>

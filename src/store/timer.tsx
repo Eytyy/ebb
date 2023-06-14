@@ -1,4 +1,4 @@
-import { type DistractionProps } from "~/components/timer/distractionView";
+import { type DistractionProps } from "~/components/timer/ViewDistraction";
 
 const views = ["default", "distraction", "submission"] as const;
 export type TimerViews = (typeof views)[number];
@@ -66,6 +66,12 @@ export const reducer = (state = initialState, action: Actions) => {
       return {
         ...state,
         time: state.time + 1,
+      };
+    }
+    case "SWITCH_VIEW": {
+      return {
+        ...state,
+        view: action.payload,
       };
     }
     case "SET_END": {

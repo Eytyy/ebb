@@ -5,7 +5,7 @@ type TimeLog = RouterOutputs["tracks"]["getTimeLogsByDay"][number];
 
 export default function TimerList() {
   const { data } = api.tracks.getTimeLogsByDay.useQuery();
-  console.log(data);
+
   return (
     <div className="w-full">
       {!data || data.length === 0 ? (

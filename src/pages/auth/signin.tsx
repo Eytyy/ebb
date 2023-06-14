@@ -9,7 +9,6 @@ import { FaDiscord, FaGoogle } from "react-icons/fa";
 export default function SignIn({
   providers,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  console.log(providers);
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
       {Object.values(providers).map((provider) => (

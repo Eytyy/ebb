@@ -110,13 +110,22 @@ export default function Timer({ activity, onCancel, reset }: Props) {
     <>
       {view === "default" && (
         <>
-          <TimerNav title={activity.name} onDone={onDone} onCancel={onCancel} />
+          <TimerNav
+            title={activity.name}
+            onDone={onDone}
+            onCancel={onCancel}
+            openDistraction={() =>
+              dispatch({
+                type: "SWITCH_VIEW",
+                payload: "distraction",
+              })
+            }
+          />
           <ViewMain time={formattedTime} />
         </>
       )}
       {view === "distraction" && (
         <>
-          <DistractionNav />
           {moods && (
             <ViewDistraction
               moods={moods}

@@ -1,19 +1,19 @@
-import { CgClose } from "react-icons/cg";
 import { useCallback, useRef, useMemo } from "react";
-import Mood from "../mood";
 import { type Variants, motion } from "framer-motion";
-type Props = {
-  time: string;
-  moods?: { id: string; name: string }[];
-  close: () => void;
-  add: (d: DistractionProps) => void;
-};
+import DistractionNav from "../nav/DistractionNav";
 
 export type DistractionProps = {
   start: Date;
   end: Date;
   moodId: string;
   text: string;
+};
+
+type Props = {
+  time: string;
+  moods?: { id: string; name: string }[];
+  close: () => void;
+  add: (d: DistractionProps) => void;
 };
 
 const variants: Variants = {
@@ -27,47 +27,39 @@ export default function ViewDistraction({ time, moods, add, close }: Props) {
 
   const onSubmit = useCallback(
     (moodId: string) => {
-      if (input.current) {
-        add({
-          end: new Date(),
-          start,
-          moodId,
-          text: input.current.value,
-        });
-        close();
-      }
+      if (!input.current) return void 0;
+      add({
+        end: new Date(),
+        start,
+        moodId,
+        text: input.current.value,
+      });
+      close();
     },
     [start, add, close]
   );
 
   return (
-    <motion.div
-      className="mx-auto grid max-w-5xl grid-cols-4 gap-8"
-      variants={variants}
-      initial="initial"
-      animate="animate"
-    >
-      <h1>{time}</h1>
-      <div className="grid grid-rows-[min-content,1fr] gap-4">
-        <label htmlFor="note" className="text-4xl font-bold">
-          {`What's up?`}
-        </label>
+    <>
+      <DistractionNav
+        submit={onSubmit}
+        time={time}
+        close={close}
+        moods={moods}
+      />
+      <motion.div
+        className="mx-auto h-full max-w-5xl"
+        variants={variants}
+        initial="initial"
+        animate="animate"
+      >
         <textarea
           ref={input}
           id="note"
-          className="bg-black text-2xl outline-none"
+          className="block h-full w-full bg-black text-2xl outline-none"
+          placeholder="what's up?"
         />
-      </div>
-      <div className="flex items-center justify-between py-4">
-        <button className="text-4xl" onClick={close}>
-          <CgClose />
-        </button>
-        <div className="space-x-4">
-          {moods?.map((mood) => (
-            <Mood key={mood.id} onClick={onSubmit} {...mood} />
-          ))}
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }
