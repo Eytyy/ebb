@@ -1,6 +1,9 @@
 import useFormInputFocus from "~/hooks/useFormInputFocus";
 
 import type { ChangeEvent } from "react";
+import Label from "./Label";
+import StepWrapper from "./StepWrapper";
+import InputWrapper from "./InputWrapper";
 
 type Props = {
   value: string;
@@ -11,19 +14,21 @@ export default function NameStep({ value, onChange }: Props) {
   const { ref } = useFormInputFocus();
 
   return (
-    <div className="text-8xl">
-      <label htmlFor="name" className="mr-4">
+    <StepWrapper>
+      <Label id="name">
         What is the name of the activity you want to track
-      </label>
-      <input
-        ref={ref}
-        id="name"
-        onChange={onChange}
-        className="bg-transparent outline-none "
-        type="text"
-        value={value}
-        name="name"
-      />
-    </div>
+      </Label>
+      <InputWrapper>
+        <input
+          ref={ref}
+          id="name"
+          onChange={onChange}
+          className="bg-transparent outline-none "
+          type="text"
+          value={value}
+          name="name"
+        />
+      </InputWrapper>
+    </StepWrapper>
   );
 }

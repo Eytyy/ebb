@@ -1,6 +1,9 @@
 import { type ChangeEvent } from "react";
 import useFormInputFocus from "~/hooks/useFormInputFocus";
 import useSuggestions from "~/hooks/useSuggestions";
+import Label from "./Label";
+import StepWrapper from "./StepWrapper";
+import InputWrapper from "./InputWrapper";
 
 type Props = {
   activityName: string;
@@ -32,19 +35,22 @@ export default function CategoryStep({
 
   return (
     <>
-      <div className="text-8xl">
-        <label htmlFor="category">
-          {`What is the name of the category you want to use for ${activityName}`}
-        </label>
-        <input
-          id="category"
-          ref={ref}
-          value={value}
-          onChange={onChange}
-          className="border-b-2 bg-transparent outline-none"
-          type="text"
-          name="category"
-        />
+      <StepWrapper>
+        <Label id="category">
+          What is the name of the category you want to use for {activityName}
+        </Label>
+        <InputWrapper>
+          <input
+            id="category"
+            ref={ref}
+            value={value}
+            onChange={onChange}
+            className="border-b-2 bg-transparent outline-none"
+            type="text"
+            name="category"
+          />
+        </InputWrapper>
+
         {notAvail && (
           <p className="text-lg font-normal">
             <span className="font-bold">[ {value} ]</span>
@@ -67,7 +73,7 @@ export default function CategoryStep({
             ))}
           </div>
         )}
-      </div>
+      </StepWrapper>
     </>
   );
 }

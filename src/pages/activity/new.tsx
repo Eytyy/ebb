@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
@@ -92,19 +93,29 @@ export default function NewActivity() {
         lastStep={3}
       />
       <div className="mt-16 space-y-10 text-4xl font-bold">
-        {step === 1 && <NameStep onChange={handleChange} value={name} />}
-        {step === 2 && (
-          <CategoryStep
-            categories={categories}
-            value={category}
-            onChange={handleChange}
-            update={updateCategory}
-            activityName={state.name}
-          />
-        )}
-        {step === 3 && (
-          <TypeStep onChange={handleChange} value={type} activityName={name} />
-        )}
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <NameStep key="name" onChange={handleChange} value={name} />
+          )}
+          {step === 2 && (
+            <CategoryStep
+              key="category"
+              categories={categories}
+              value={category}
+              onChange={handleChange}
+              update={updateCategory}
+              activityName={state.name}
+            />
+          )}
+          {step === 3 && (
+            <TypeStep
+              key="type"
+              onChange={handleChange}
+              value={type}
+              activityName={name}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
