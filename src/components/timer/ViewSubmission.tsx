@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import Mood from "../mood";
 import { motion, type Variants } from "framer-motion";
 import SubmissionNav from "../nav/SubmissionNav";
 

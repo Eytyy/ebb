@@ -5,6 +5,7 @@ import NewActivityNav from "~/components/nav/NewActivityNav";
 import CategoryStep from "~/components/new-activity/CategoryStep";
 import NameStep from "~/components/new-activity/NameStep";
 import TypeStep from "~/components/new-activity/TypeStep";
+import Submitting from "~/components/timer/submitting";
 import { api } from "~/utils/api";
 
 type State = {
@@ -24,14 +25,11 @@ const initialState: State = {
 export default function NewActivity() {
   const [state, setState] = useState(initialState);
   const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
 
   const { data: categories } = api.activity.getCategories.useQuery();
 
-  const {
-    mutate: create,
-    isLoading,
-    isError,
-  } = api.activity.create.useMutation({
+  const { mutate: create, isLoading } = api.activity.create.useMutation({
     onSuccess: () => {
       void router.push("/dashboard");
     },
@@ -66,6 +64,7 @@ export default function NewActivity() {
       category,
     });
     setState(initialState);
+    setSubmitting(true);
   };
 
   const goToNextStep = () => {
@@ -78,6 +77,10 @@ export default function NewActivity() {
   };
 
   const { step, category, name, type } = state;
+
+  if (isLoading || submitting) {
+    return <Submitting />;
+  }
 
   return (
     <>

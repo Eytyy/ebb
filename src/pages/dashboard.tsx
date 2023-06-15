@@ -6,6 +6,7 @@ import { type RouterOutputs, api } from "~/utils/api";
 import DashboardNav from "~/components/nav/DashboardNav";
 import Timer from "~/components/timer";
 import ActivitiesList from "~/components/ActivitiesList";
+import Submitting from "~/components/timer/submitting";
 
 export type DashboardViews = "list" | "timer" | "new";
 
