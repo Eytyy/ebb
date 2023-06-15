@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { requireAuth } from "~/requireAuth";
 import { type RouterOutputs, api } from "~/utils/api";
@@ -7,8 +7,10 @@ import DashboardNav from "~/components/nav/DashboardNav";
 import Timer from "~/components/timer";
 import ActivitiesList from "~/components/ActivitiesList";
 import Submitting from "~/components/timer/submitting";
+import OnboardScreen from "~/components/OnboardScreen";
+import OnboardingNav from "~/components/nav/OnboardingNav";
 
-export type DashboardViews = "list" | "timer" | "new";
+export type DashboardViews = "list" | "timer" | "new" | "onboarding";
 
 type InitialState = {
   view: DashboardViews;
@@ -54,9 +56,8 @@ const reducer = (state: InitialState = initialState, action: Actions) => {
 };
 
 export default function Dashboard() {
-  const { data: activities } = api.activity.getAll.useQuery();
+  const { data: activities, isLoading } = api.activity.getAll.useQuery();
   const [state, dispatch] = React.useReducer(reducer, initialState);
-
   const { view, selectedActivity } = state;
 
   const startTimer = React.useCallback(
@@ -69,8 +70,32 @@ export default function Dashboard() {
     []
   );
 
+  useEffect(() => {
+    if (activities && activities.length == 0) {
+      dispatch({
+        type: "SET_VIEW",
+        payload: "onboarding",
+      });
+    } else if (activities && activities.length > 0) {
+      dispatch({
+        type: "SET_VIEW",
+        payload: "list",
+      });
+    }
+  }, [activities]);
+
+  if (isLoading) {
+    return <Submitting />;
+  }
+
   return (
     <>
+      {view === "onboarding" && (
+        <>
+          <OnboardingNav />
+          <OnboardScreen />
+        </>
+      )}
       {view === "list" && (
         <>
           <DashboardNav />

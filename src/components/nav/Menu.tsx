@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 import type { Session } from "next-auth";
 

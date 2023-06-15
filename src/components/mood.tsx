@@ -10,7 +10,7 @@ export default function Mood({ id, name, onClick }: MoodProps) {
       onClick={() => onClick(id)}
       className="h-10 w-10 rotate-90 rounded-full bg-white text-black"
     >
-      {moodFace(name)}
+      <MoodFace name={name} />
     </button>
   );
 }
@@ -18,18 +18,18 @@ export default function Mood({ id, name, onClick }: MoodProps) {
 export function MoodAvatar({ name }: Omit<MoodProps, "onClick">) {
   return (
     <div className="flex h-6 w-6 rotate-90 items-end justify-center rounded-full bg-white text-black">
-      {moodFace(name)}
+      <MoodFace name={name} />
     </div>
   );
 }
 
-export function moodFace(name: string) {
+export function MoodFace({ name }: { name: string }) {
   switch (name) {
     case "ok":
-      return ":)";
+      return <>{`:)`}</>;
     case "not-ok":
-      return ":(";
+      return <>{`:(`}</>;
     default:
-      return ":";
+      return <>{`:`}</>;
   }
 }

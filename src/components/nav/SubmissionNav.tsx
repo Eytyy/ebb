@@ -6,7 +6,7 @@ import {
   TopRightBtn,
 } from "./Buttons";
 import Circle from "./QuickCaptureBtn";
-import { moodFace } from "../mood";
+import { MoodFace, moodFace } from "../mood";
 
 type Props = {
   title: string;
@@ -34,7 +34,7 @@ export default function SubmissionNav({ title, moods, submit }: Props) {
                   onClick={() => submit(mood.id)}
                   className="h-10 w-10 rotate-90 rounded-full bg-white text-black"
                 >
-                  {moodFace(mood.name)}
+                  <MoodFace name={mood.name} />
                 </button>
               ))}
             </div>

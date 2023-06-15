@@ -1,16 +1,15 @@
 import React from "react";
 import { motion, type Variants } from "framer-motion";
 
-import type { Provider } from "next-auth/providers";
-
 import SignIn from "./SignIn";
+
+import type { BuiltInProviderType } from "next-auth/providers";
+import type { ClientSafeProvider, LiteralUnion } from "next-auth/react";
 
 const variants: Variants = {
   initial: {},
   animate: {
-    transition: {
-      staggerChildren: 0.5,
-    },
+    transition: { staggerChildren: 0.5 },
   },
 };
 
@@ -36,7 +35,13 @@ const textVariants = {
   },
 };
 
-export default function FrontDisplay({ providers }: { providers: Provider[] }) {
+type Props = {
+  providers:
+    | Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
+    | never[];
+};
+
+export default function FrontDisplay({ providers }: Props) {
   return (
     <motion.div
       className="space-y-6"

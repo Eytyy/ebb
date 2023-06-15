@@ -15,7 +15,7 @@ export default function Submitting() {
             repeatDelay: 0.2,
           },
         }}
-        className="relative z-10 flex h-60 w-60 items-center justify-center rounded-full bg-white  text-black"
+        className="relative z-10 flex h-96 w-96 items-center justify-center rounded-full bg-white  text-black"
       ></motion.div>
     </div>
   );

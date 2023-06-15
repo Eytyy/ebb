@@ -5,7 +5,7 @@ import {
   TopLeftBtn,
   TopRightBtn,
 } from "./Buttons";
-import { moodFace } from "../mood";
+import { MoodFace } from "../mood";
 
 type Props = {
   time: string;
@@ -38,7 +38,7 @@ export default function DistractionNav({ time, moods, submit, close }: Props) {
                   onClick={() => submit(mood.id)}
                   className="text-forground h-10 w-10 rotate-90 rounded-full bg-background"
                 >
-                  {moodFace(mood.name)}
+                  <MoodFace name={mood.name} />
                 </button>
               ))}
             </div>

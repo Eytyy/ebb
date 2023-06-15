@@ -3,7 +3,7 @@ import type {
   InferGetServerSidePropsType,
 } from "next";
 import Head from "next/head";
-import { getProviders, signIn, signOut, useSession } from "next-auth/react";
+import { getProviders } from "next-auth/react";
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/server/auth";
@@ -46,18 +46,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: { providers: providers ?? [] },
   };
 }
-
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  return (
-    <div>
-      <button
-        className="rounded-xl border-2 px-10 py-3 font-semibold no-underline transition"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};

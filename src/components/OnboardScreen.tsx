@@ -4,14 +4,14 @@ import React from "react";
 import { MoodFace } from "~/components/mood";
 import Label from "~/components/new-activity/Label";
 
-export default function Onboard() {
+export default function OnboardScreen() {
   const { data: sessionData } = useSession();
 
   if (!sessionData) return null;
 
   return (
-    <div className="p-10">
-      <div className="mb-10 text-9xl">
+    <div className="pt-16">
+      <div className="mb-10 max-w-6xl text-9xl">
         <Label id="name">
           <span>
             Hey {sessionData.user.name?.split(" ")[0]}! let’s start creating
