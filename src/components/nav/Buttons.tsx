@@ -1,13 +1,68 @@
-import clsx from "clsx";
 import { type PropsWithChildren } from "react";
+import { type Variants, motion } from "framer-motion";
 
-const Btn = ({
-  children,
-  className,
-}: PropsWithChildren<{
-  className?: string;
-}>) => {
-  return <div className={clsx("fixed text-3xl", className)}>{children}</div>;
+const topBtnVariants: Variants = {
+  initial: {
+    y: -100,
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+  exit: {
+    y: -100,
+    opacity: 0,
+  },
+};
+
+const bottomBtnVariants: Variants = {
+  initial: {
+    y: 100,
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      y: {
+        duration: 0.5,
+      },
+    },
+  },
+  exit: {
+    y: 100,
+    opacity: 0,
+  },
+};
+
+export const TopLeftBtn = ({ children }: PropsWithChildren) => {
+  return (
+    <motion.div
+      className="fixed left-20 top-16 text-3xl text-white"
+      variants={topBtnVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export const TopRightBtn = ({ children }: PropsWithChildren) => {
+  return (
+    <motion.div
+      className="fixed right-20 top-16 text-3xl text-white"
+      variants={topBtnVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      {children}
+    </motion.div>
+  );
 };
 
 export const BottomLeftBtn = ({
@@ -15,7 +70,17 @@ export const BottomLeftBtn = ({
 }: PropsWithChildren<{
   solid?: boolean;
 }>) => {
-  return <Btn className="bottom-16 left-20 z-20">{children}</Btn>;
+  return (
+    <motion.div
+      className="fixed bottom-16 left-20 z-20 text-3xl"
+      variants={bottomBtnVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      {children}
+    </motion.div>
+  );
 };
 
 export const BottomRightBtn = ({
@@ -23,13 +88,15 @@ export const BottomRightBtn = ({
 }: PropsWithChildren<{
   solid?: boolean;
 }>) => {
-  return <Btn className="bottom-16 right-20">{children}</Btn>;
-};
-
-export const TopLeftBtn = ({ children }: PropsWithChildren) => {
-  return <Btn className="left-20 top-16 text-white">{children}</Btn>;
-};
-
-export const TopRightBtn = ({ children }: PropsWithChildren) => {
-  return <Btn className="right-20 top-16 text-white">{children}</Btn>;
+  return (
+    <motion.div
+      className="fixed bottom-16 right-20 text-3xl"
+      variants={bottomBtnVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      {children}
+    </motion.div>
+  );
 };
