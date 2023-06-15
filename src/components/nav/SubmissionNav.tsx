@@ -5,25 +5,31 @@ import {
   TopLeftBtn,
   TopRightBtn,
 } from "./Buttons";
-import Circle from "./QuickCaptureBtn";
-import { MoodFace, moodFace } from "../mood";
+import { MoodFace } from "../mood";
+import Link from "next/link";
 
 type Props = {
   title: string;
+  time: string;
   moods?: { id: string; name: string }[];
   submit: (moodId: string) => void;
+  cancel: () => void;
 };
 
-export default function SubmissionNav({ title, moods, submit }: Props) {
+export default function SubmissionNav({
+  title,
+  moods,
+  time,
+  submit,
+  cancel,
+}: Props) {
   return (
     <>
       <TopLeftBtn>{title}</TopLeftBtn>
-      <TopRightBtn>
-        <button>
-          <Circle />
-        </button>
-      </TopRightBtn>
-      <BottomLeftBtn>How was it?</BottomLeftBtn>
+      <TopRightBtn>{time}</TopRightBtn>
+      <BottomLeftBtn>
+        <button onClick={cancel}>Cancel</button>
+      </BottomLeftBtn>
       {moods && (
         <BottomRightBtn>
           <div className="flex items-center justify-between py-4">

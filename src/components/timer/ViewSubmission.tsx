@@ -1,10 +1,14 @@
 import { useRef } from "react";
 import { motion, type Variants } from "framer-motion";
 import SubmissionNav from "../nav/SubmissionNav";
+import Label from "../new-activity/Label";
+import useFormInputFocus from "~/hooks/useFormInputFocus";
 
 type Props = {
   title: string;
+  time: string;
   moods?: { id: string; name: string }[];
+  onCancel: () => void;
   onSubmit: ({
     description,
     moodId,
@@ -19,27 +23,41 @@ const variants: Variants = {
   animate: { transition: { staggerChildren: 0.05 } },
 };
 
-export default function ViewSubmission({ title, moods, onSubmit }: Props) {
-  const desc = useRef<HTMLTextAreaElement | null>(null);
+export default function ViewSubmission({
+  title,
+  moods,
+  time,
+  onCancel,
+  onSubmit,
+}: Props) {
+  const { ref } = useFormInputFocus();
+
   const submit = (moodId: string) => {
-    if (!desc.current) return void 0;
-    onSubmit({ moodId, description: desc.current.value });
+    if (!ref.current) return void 0;
+    onSubmit({ moodId, description: ref.current.value });
   };
   return (
     <>
-      <SubmissionNav submit={submit} moods={moods} title={title} />
+      <SubmissionNav
+        submit={submit}
+        cancel={onCancel}
+        moods={moods}
+        title={title}
+        time={time}
+      />
       {moods && (
         <motion.div
-          className="mx-auto h-full max-w-5xl"
+          className="h-full pt-16 text-8xl"
           variants={variants}
           initial="initial"
           animate="animate"
         >
+          <Label id="note">{`What were you up to?`}</Label>
           <textarea
-            ref={desc}
+            ref={ref}
             id="desc"
-            placeholder="what where you doing?"
-            className="h-full w-full bg-transparent text-2xl outline-none"
+            className="mt-4 block h-full w-full bg-transparent text-4xl outline-none"
+            name="desc"
           />
         </motion.div>
       )}

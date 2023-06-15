@@ -36,7 +36,7 @@ export default function DistractionNav({ time, moods, submit, close }: Props) {
                 <button
                   key={mood.id}
                   onClick={() => submit(mood.id)}
-                  className="text-forground h-10 w-10 rotate-90 rounded-full bg-background"
+                  className="text-forground mt-4 h-10 w-10 rotate-90 rounded-full bg-background"
                 >
                   <MoodFace name={mood.name} />
                 </button>

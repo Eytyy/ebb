@@ -6,7 +6,6 @@ import { getFormatedTime } from "~/utils/helpers";
 
 import TimerNav from "../nav/TimerNav";
 import Submitting from "./submitting";
-import DistractionNav from "../nav/DistractionNav";
 import ViewSubmission from "./ViewSubmission";
 import ViewMain from "./ViewMain";
 import ViewDistraction, { type DistractionProps } from "./ViewDistraction";
@@ -71,7 +70,7 @@ export default function Timer({ activity, onCancel, reset }: Props) {
       // terminate worker on cleanup
       worker.current?.terminate();
     };
-  }, []);
+  }, [appDispatch]);
 
   // handle timer session completion
   const onDone = useCallback(() => {
@@ -155,6 +154,8 @@ export default function Timer({ activity, onCancel, reset }: Props) {
             title={activity.name}
             moods={moods}
             onSubmit={submit}
+            onCancel={onCancel}
+            time={formattedTime}
           />
         </div>
       )}
