@@ -6,22 +6,25 @@ import { getProviders, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/server/auth";
 import { FaDiscord, FaGoogle } from "react-icons/fa";
+
 export default function SignIn({
   providers,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
-      {Object.values(providers).map((provider) => (
-        <div key={provider.name}>
-          <button
-            onClick={() => void signIn(provider.id)}
-            className="flex items-center gap-2 border-2 border-white p-4"
-          >
-            <div className="text-2xl">{getProviderLogo(provider.name)}</div>{" "}
-            Sign in with {provider.name}
-          </button>
-        </div>
-      ))}
+    <div>
+      <div className="flex flex-col items-center justify-center gap-4">
+        {Object.values(providers).map((provider) => (
+          <div key={provider.name}>
+            <button
+              onClick={() => void signIn(provider.id)}
+              className="flex items-center gap-2 border-2 border-white p-4"
+            >
+              <div className="text-2xl">{getProviderLogo(provider.name)}</div>{" "}
+              Sign in with {provider.name}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

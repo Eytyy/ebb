@@ -8,7 +8,7 @@ export default function Login() {
         className="rounded-full bg-black/10 px-10 py-3 font-semibold no-underline transition hover:bg-black/20"
         onClick={() =>
           void signIn(undefined, {
-            callbackUrl: "http://localhost:3000/tracks",
+            callbackUrl: "http://localhost:3000/dashboard",
           })
         }
       >

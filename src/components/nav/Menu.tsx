@@ -34,7 +34,7 @@ export default function Menu() {
 
   return (
     <motion.div
-      className="fixed bottom-0 left-0 z-10 grid h-full w-full grid-cols-2 bg-background px-20 py-16"
+      className="fixed bottom-0 left-0 z-20 grid h-full w-full grid-cols-2 bg-background px-20 py-16"
       variants={nav_variants}
       initial="initial"
       animate="animate"

@@ -38,7 +38,7 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/",
     error: "/auth/error", // Error code passed in query string as ?error=
     verifyRequest: "/auth/verify", // (used for check email message)
     newUser: "/auth/new", // New users will be directed here on first sign in (leave the property out if not of interest)
@@ -54,10 +54,10 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    // }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
