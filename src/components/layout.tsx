@@ -12,7 +12,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
   } = useApp();
 
   return (
-    <div className={`relative h-screen p-16 ${inter.className}`}>
+    <div className={`relative h-screen px-20 py-16 ${inter.className}`}>
       <AnimatePresence mode="wait">{isNavOpen && <Menu />}</AnimatePresence>
       {children}
     </div>

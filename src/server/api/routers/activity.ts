@@ -86,7 +86,7 @@ export const activityRouter = createTRPCRouter({
         type: z.string(),
         category: z.object({
           name: z.string(),
-          id: z.string(),
+          id: z.string().optional(),
         }),
       })
     )

@@ -10,6 +10,7 @@ import {
   TopRightBtn,
 } from "./Buttons";
 import Circle from "./QuickCaptureBtn";
+import Link from "next/link";
 
 export default function DashboardNav() {
   const { dispatch, state } = useApp();
@@ -42,7 +43,9 @@ export default function DashboardNav() {
           {isNavOpen ? "Close" : "Menu"}
         </motion.button>
       </BottomLeftBtn>
-      <BottomRightBtn>New</BottomRightBtn>
+      <BottomRightBtn>
+        <Link href="/activity/new">New</Link>
+      </BottomRightBtn>
     </>
   );
 }

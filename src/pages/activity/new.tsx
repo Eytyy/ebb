@@ -1,173 +1,104 @@
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { ChangeEvent } from "react";
-import Layout from "~/components/layout";
+import NewActivityNav from "~/components/nav/NewActivityNav";
+import CategoryStep from "~/components/new-activity/CategoryStep";
+import NameStep from "~/components/new-activity/NameStep";
+import TypeStep from "~/components/new-activity/TypeStep";
 import { api } from "~/utils/api";
 
-const initialState = {
+type State = {
+  name: string;
+  category: string;
+  type: "timer" | "count";
+  step: number;
+};
+
+const initialState: State = {
   name: "",
-  category: { name: "", id: "" },
+  category: "",
   type: "timer",
+  step: 1,
 };
 
 export default function NewActivity() {
   const [state, setState] = useState(initialState);
-  const create = api.activity.create.useMutation({
-    onSuccess: () => {
-      void router.push("/track");
-    },
-  });
   const router = useRouter();
 
-  const handleCategoryChange = (category: { name: string; id: string }) => {
-    setState((state) => ({ ...state, category }));
-  };
+  const { data: categories } = api.activity.getCategories.useQuery();
+
+  const { mutate: create } = api.activity.create.useMutation({
+    onSuccess: () => {
+      void router.push("/dashboard");
+    },
+  });
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setState({ ...state, [e.target.id]: e.target.value });
+    console.log(e.target.name, e.target.value);
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
+
+  // this is to handle updating the state of the category input
+  // when the user clicks on a suggestion from the list
+  const updateCategory = (value: string) => {
+    setState((state) => ({
+      ...state,
+      category: value,
+    }));
   };
 
   const handleSubmit = () => {
-    if (state.name === "" || state.category.id === "" || state.type === "") {
+    if (state.name === "" || state.category === "") {
       return false;
     }
+    const category = categories?.find((c) => c.name === state.category) ?? {
+      name: state.category,
+    };
 
-    create.mutate(state);
+    create({
+      ...state,
+      category,
+    });
     setState(initialState);
   };
 
+  const goToNextStep = () => {
+    if (state.step === 4) return void 0;
+    setState((state) => ({ ...state, step: state.step + 1 }));
+  };
+
+  const goToStep = (step: number) => {
+    setState((state) => ({ ...state, step }));
+  };
+
+  const { step, category, name, type } = state;
+
   return (
     <>
-      <div className="space-y-10 text-4xl font-bold">
-        <TextInput name="name" onChange={handleChange} />
-        <CreateCategory onChange={handleCategoryChange} />
-        <div className="">
-          <label htmlFor="">type</label>
-          <select
-            id="type"
-            value={state.type}
+      <NewActivityNav
+        onSubmit={handleSubmit}
+        onNext={goToNextStep}
+        goToStep={goToStep}
+        step={step}
+        lastStep={3}
+      />
+      <div className="mt-16 space-y-10 text-4xl font-bold">
+        {step === 1 && <NameStep onChange={handleChange} value={name} />}
+        {step === 2 && (
+          <CategoryStep
+            categories={categories}
+            value={category}
             onChange={handleChange}
-            className=" color-white border-2 border-[rgba(255,255,255,0.5)] bg-black"
-          >
-            <option value="timer">Timer</option>
-            <option value="count">Count</option>
-          </select>
-        </div>
-        <button
-          className="rounded-3xl bg-white px-4 py-1 text-2xl font-normal text-black"
-          onClick={handleSubmit}
-        >
-          create
-        </button>
+            update={updateCategory}
+            activityName={state.name}
+          />
+        )}
+        {step === 3 && (
+          <TypeStep onChange={handleChange} value={type} activityName={name} />
+        )}
       </div>
     </>
-  );
-}
-
-function CreateCategory({
-  onChange,
-}: {
-  onChange: (c: { name: string; id: string }) => void;
-}) {
-  const { data: categories } = api.activity.getCategories.useQuery();
-
-  const [suggestions, setSuggestions] = useState<typeof categories>([]);
-  const [value, setValue] = useState("");
-  const [createBtnVisible, setCreateBtnVisible] = useState(false);
-
-  const ref = useRef<HTMLInputElement>(null);
-
-  function suggest() {
-    if (!ref.current) return;
-    const value = ref.current.value.toLowerCase();
-    const suggestions = categories?.filter((category) => {
-      return (
-        value.trim() !== "" &&
-        category.name.toLowerCase().includes(value.trim())
-      );
-    });
-
-    if (value !== "" && suggestions?.length === 0) {
-      setCreateBtnVisible(true);
-    } else {
-      setCreateBtnVisible(false);
-    }
-
-    setSuggestions(suggestions ?? []);
-  }
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    suggest();
-  };
-
-  const updateCategory = (category: { name: string; id: string }) => {
-    onChange(category);
-    setValue(category.name);
-    setSuggestions([]);
-  };
-
-  return (
-    <div>
-      <div className="flex gap-2">
-        <label htmlFor="category">category</label>
-        <div className="relative">
-          <input
-            id="category"
-            ref={ref}
-            value={value}
-            onChange={handleChange}
-            className="color-white border-b-2 border-[rgba(255,255,255,0.5)] bg-black outline-none"
-            type="text"
-          />
-          {suggestions && suggestions?.length > 0 && (
-            <div className="absolute left-0 top-10 w-full bg-[#222]">
-              {suggestions?.map((category) => (
-                <div
-                  key={category.id}
-                  onClick={() => {
-                    updateCategory(category);
-                  }}
-                  className="cursor-pointer p-2 hover:bg-gray-700"
-                >
-                  {category.name}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {createBtnVisible && (
-        <p className="text-lg font-normal">
-          <span className="font-bold">[ {value} ]</span>
-          {` is not a category yet, but we'll create it automatically for you.`}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function TextInput({
-  name,
-  onChange,
-}: {
-  name: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <div className="">
-      <label htmlFor={name} className="mr-4">
-        {name}
-      </label>
-      <input
-        id={name}
-        onChange={onChange}
-        className="color-white border-b-2 border-[rgba(255,255,255,0.5)] bg-black outline-none"
-        type="text"
-      />
-    </div>
   );
 }

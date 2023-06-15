@@ -1,5 +1,4 @@
 import React from "react";
-import LayoutInner from "~/components/LayoutInner";
 import ActivityNav from "~/components/nav/ActivityNav";
 import LogItem from "~/components/timer/LogItem";
 import { requireAuth } from "~/requireAuth";
