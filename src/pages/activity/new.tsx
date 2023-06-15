@@ -92,7 +92,7 @@ export default function NewActivity() {
         step={step}
         lastStep={3}
       />
-      <div className="mt-16 space-y-10 text-4xl font-bold">
+      <div className="space-y-10 pt-16 text-4xl font-bold">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <NameStep key="name" onChange={handleChange} value={name} />

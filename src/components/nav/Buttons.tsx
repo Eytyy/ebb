@@ -40,7 +40,7 @@ const bottomBtnVariants: Variants = {
 export const TopLeftBtn = ({ children }: PropsWithChildren) => {
   return (
     <motion.div
-      className="fixed left-20 top-16 text-3xl text-white"
+      className="fixed left-20 top-16 z-10 text-3xl"
       variants={topBtnVariants}
       initial="initial"
       animate="animate"
@@ -54,7 +54,7 @@ export const TopLeftBtn = ({ children }: PropsWithChildren) => {
 export const TopRightBtn = ({ children }: PropsWithChildren) => {
   return (
     <motion.div
-      className="fixed right-20 top-16 text-3xl text-white"
+      className="fixed right-20 top-16 z-10 text-3xl"
       variants={topBtnVariants}
       initial="initial"
       animate="animate"
@@ -90,7 +90,7 @@ export const BottomRightBtn = ({
 }>) => {
   return (
     <motion.div
-      className="fixed bottom-16 right-20 text-3xl"
+      className="fixed bottom-16 right-20 z-10 text-3xl"
       variants={bottomBtnVariants}
       initial="initial"
       animate="animate"

@@ -1,5 +1,10 @@
 import React from "react";
-import { BottomLeftBtn, BottomRightBtn, TopLeftBtn } from "./Buttons";
+import {
+  BottomLeftBtn,
+  BottomRightBtn,
+  TopLeftBtn,
+  TopRightBtn,
+} from "./Buttons";
 import { moodFace } from "../mood";
 
 type Props = {
@@ -12,9 +17,16 @@ type Props = {
 export default function DistractionNav({ time, moods, submit, close }: Props) {
   return (
     <>
-      <TopLeftBtn>{time}</TopLeftBtn>
+      <TopLeftBtn>
+        <div className="text-background">note</div>
+      </TopLeftBtn>
+      <TopRightBtn>
+        <div className="text-background">{time}</div>
+      </TopRightBtn>
       <BottomLeftBtn>
-        <button onClick={close}>cancel</button>
+        <button className="text-background" onClick={close}>
+          cancel
+        </button>
       </BottomLeftBtn>
       {moods && (
         <BottomRightBtn>
@@ -24,7 +36,7 @@ export default function DistractionNav({ time, moods, submit, close }: Props) {
                 <button
                   key={mood.id}
                   onClick={() => submit(mood.id)}
-                  className="h-10 w-10 rotate-90 rounded-full bg-white text-black"
+                  className="text-forground h-10 w-10 rotate-90 rounded-full bg-background"
                 >
                   {moodFace(mood.name)}
                 </button>

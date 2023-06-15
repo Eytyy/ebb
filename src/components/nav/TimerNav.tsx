@@ -5,28 +5,18 @@ import {
   TopLeftBtn,
   TopRightBtn,
 } from "./Buttons";
-import Circle from "./QuickCaptureBtn";
 
 type Props = {
   title: string;
+  time: string;
   onDone: () => void;
   onCancel: () => void;
-  openDistraction: () => void;
 };
-export default function TimerNav({
-  title,
-  onDone,
-  onCancel,
-  openDistraction,
-}: Props) {
+export default function TimerNav({ title, onDone, onCancel, time }: Props) {
   return (
     <>
       <TopLeftBtn>{title}</TopLeftBtn>
-      <TopRightBtn>
-        <button role="button" onClick={openDistraction}>
-          <Circle />
-        </button>
-      </TopRightBtn>
+      <TopRightBtn>{time}</TopRightBtn>
       <BottomLeftBtn>
         <button onClick={onCancel}>cancel</button>
       </BottomLeftBtn>

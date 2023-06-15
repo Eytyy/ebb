@@ -10,6 +10,8 @@ import DistractionNav from "../nav/DistractionNav";
 import ViewSubmission from "./ViewSubmission";
 import ViewMain from "./ViewMain";
 import ViewDistraction, { type DistractionProps } from "./ViewDistraction";
+import { useApp } from "~/context/app";
+import { AnimatePresence } from "framer-motion";
 
 type Props = {
   activity: RouterOutputs["activity"]["getAll"][0];
@@ -19,6 +21,7 @@ type Props = {
 
 export default function Timer({ activity, onCancel, reset }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { dispatch: appDispatch } = useApp();
 
   const { data: moods } = api.mood.getAll.useQuery();
 
@@ -55,6 +58,13 @@ export default function Timer({ activity, onCancel, reset }: Props) {
     dispatch({
       type: "SET_START",
       payload: new Date(),
+    });
+    appDispatch({
+      type: "SET_POS",
+      payload: {
+        x: 0,
+        y: 0,
+      },
     });
 
     return () => {
@@ -107,13 +117,17 @@ export default function Timer({ activity, onCancel, reset }: Props) {
   const formattedTime = getFormatedTime(time);
 
   return (
-    <>
+    <AnimatePresence mode="wait">
       {view === "default" && (
-        <>
+        <div className="h-full" key="timer-main">
           <TimerNav
             title={activity.name}
             onDone={onDone}
             onCancel={onCancel}
+            time={formattedTime}
+          />
+          <ViewMain
+            time={formattedTime}
             openDistraction={() =>
               dispatch({
                 type: "SWITCH_VIEW",
@@ -121,11 +135,10 @@ export default function Timer({ activity, onCancel, reset }: Props) {
               })
             }
           />
-          <ViewMain time={formattedTime} />
-        </>
+        </div>
       )}
       {view === "distraction" && (
-        <>
+        <div className="h-full" key="timer-distraction">
           {moods && (
             <ViewDistraction
               moods={moods}
@@ -134,17 +147,17 @@ export default function Timer({ activity, onCancel, reset }: Props) {
               close={closeDistraction}
             />
           )}
-        </>
+        </div>
       )}
       {view === "submission" && (
-        <>
+        <div className="h-full" key="timer-submission">
           <ViewSubmission
             title={activity.name}
             moods={moods}
             onSubmit={submit}
           />
-        </>
+        </div>
       )}
-    </>
+    </AnimatePresence>
   );
 }
