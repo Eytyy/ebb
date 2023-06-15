@@ -1,6 +1,6 @@
 import { type Variants, motion } from "framer-motion";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { forwardRef } from "react";
 import { useApp } from "~/context/app";
 
 import { type RouterOutputs } from "~/utils/api";
@@ -16,10 +16,12 @@ type Props = {
 export default function ActivityItem({ activity, startTimer }: Props) {
   switch (activity.tracker) {
     case "timer": {
-      return <Btn id={activity.id} onClick={startTimer} />;
+      return <Btn id={activity.id} name={activity.name} onClick={startTimer} />;
     }
     case "counter": {
-      return <Btn id={activity.id} onClick={() => void 0} />;
+      return (
+        <Btn id={activity.id} name={activity.name} onClick={() => void 0} />
+      );
     }
     default: {
       return null;
@@ -27,22 +29,27 @@ export default function ActivityItem({ activity, startTimer }: Props) {
   }
 }
 
-const itemVariants: Variants = {
+const BtnVars: Variants = {
   initial: {
-    scale: 0,
     opacity: 0,
   },
   animate: {
-    scale: 1,
     opacity: 1,
     transition: {
       duration: 0.5,
-      ease: "easeInOut",
     },
   },
 };
 
-function Btn({ id, onClick }: { id: string; onClick: () => void }) {
+function Btn({
+  id,
+  onClick,
+  name,
+}: {
+  id: string;
+  name: string;
+  onClick: () => void;
+}) {
   const { dispatch } = useApp();
   const router = useRouter();
 
@@ -68,7 +75,7 @@ function Btn({ id, onClick }: { id: string; onClick: () => void }) {
   }, [router, id, updatePos]);
 
   const handleClick = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       if (e.detail === 1) {
         timeout.current = setTimeout(() => {
           updatePos();
@@ -80,18 +87,45 @@ function Btn({ id, onClick }: { id: string; onClick: () => void }) {
   );
 
   return (
-    <motion.div
-      whileTap={{ scale: 0.9 }}
-      ref={ref}
+    <motion.button
+      className="w-full"
+      role="button"
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
+      variants={BtnVars}
     >
-      <motion.button
-        className="mb-4 w-full scale-100 rounded-full bg-white shadow-lg"
-        variants={itemVariants}
-      >
-        <div className="pt-[100%]" />
-      </motion.button>
-    </motion.div>
+      <h2 className="mb-2 text-left text-base font-medium">
+        {getShortTitle(name)}
+      </h2>
+      <Circle ref={ref} />
+    </motion.button>
   );
 }
+
+const CircleVariants: Variants = {
+  initial: {
+    scale: 0,
+    opacity: 0,
+  },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+};
+
+const Circle = forwardRef<HTMLDivElement>(function Circle(_, ref) {
+  return (
+    <motion.div whileTap={{ scale: 0.9 }} ref={ref}>
+      <motion.div
+        className="mb-4 w-full scale-100 rounded-full bg-white shadow-lg"
+        variants={CircleVariants}
+      >
+        <div className="pt-[100%]" />
+      </motion.div>
+    </motion.div>
+  );
+});

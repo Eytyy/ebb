@@ -18,7 +18,7 @@ const variants: Variants = {
 export default function ActivitiesList({ activities, startTimer }: Props) {
   return (
     <motion.main
-      className="mx-auto grid max-w-5xl grid-cols-4 gap-8"
+      className="mx-auto grid max-w-5xl grid-cols-4 gap-10"
       variants={variants}
       initial="initial"
       animate="animate"

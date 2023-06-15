@@ -22,6 +22,7 @@ export default function NameStep({ value, onChange }: Props) {
         className="bg-transparent outline-none "
         type="text"
         value={value}
+        name="name"
       />
     </div>
   );

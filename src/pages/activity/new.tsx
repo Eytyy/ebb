@@ -27,7 +27,11 @@ export default function NewActivity() {
 
   const { data: categories } = api.activity.getCategories.useQuery();
 
-  const { mutate: create } = api.activity.create.useMutation({
+  const {
+    mutate: create,
+    isLoading,
+    isError,
+  } = api.activity.create.useMutation({
     onSuccess: () => {
       void router.push("/dashboard");
     },
