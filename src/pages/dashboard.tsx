@@ -6,9 +6,9 @@ import { type RouterOutputs, api } from "~/utils/api";
 import DashboardNav from "~/components/nav/DashboardNav";
 import Timer from "~/components/timer";
 import ActivitiesList from "~/components/ActivitiesList";
-import Submitting from "~/components/timer/submitting";
 import OnboardScreen from "~/components/OnboardScreen";
 import OnboardingNav from "~/components/nav/OnboardingNav";
+import LoadingScreen from "~/components/LoadingScreen";
 
 export type DashboardViews = "list" | "timer" | "new" | "onboarding";
 
@@ -85,7 +85,7 @@ export default function Dashboard() {
   }, [activities]);
 
   if (isLoading) {
-    return <Submitting />;
+    return <LoadingScreen message="Loading Activities" />;
   }
 
   return (

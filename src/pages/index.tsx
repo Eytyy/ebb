@@ -3,7 +3,7 @@ import type {
   InferGetServerSidePropsType,
 } from "next";
 import Head from "next/head";
-import { getProviders } from "next-auth/react";
+import { getProviders, useSession } from "next-auth/react";
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/server/auth";

@@ -6,6 +6,8 @@ import SignIn from "./SignIn";
 import type { BuiltInProviderType } from "next-auth/providers";
 import type { ClientSafeProvider, LiteralUnion } from "next-auth/react";
 
+import LoadingScreen from "./LoadingScreen";
+
 const variants: Variants = {
   initial: {},
   animate: {
@@ -42,6 +44,12 @@ type Props = {
 };
 
 export default function FrontDisplay({ providers }: Props) {
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  if (isLoading) {
+    return <LoadingScreen message="Logging In" />;
+  }
+
   return (
     <motion.div
       className="space-y-6"
@@ -66,7 +74,7 @@ export default function FrontDisplay({ providers }: Props) {
           at a Time.
         </motion.span>
       </div>
-      <SignIn providers={providers} />
+      <SignIn providers={providers} onSignIn={() => setIsLoading(true)} />
     </motion.div>
   );
 }

@@ -5,12 +5,12 @@ import { type RouterOutputs, api } from "~/utils/api";
 import { getFormatedTime } from "~/utils/helpers";
 
 import TimerNav from "../nav/TimerNav";
-import Submitting from "./submitting";
 import ViewSubmission from "./ViewSubmission";
 import ViewMain from "./ViewMain";
 import ViewDistraction, { type DistractionProps } from "./ViewDistraction";
 import { useApp } from "~/context/app";
 import { AnimatePresence } from "framer-motion";
+import LoadingScreen from "../LoadingScreen";
 
 type Props = {
   activity: RouterOutputs["activity"]["getAll"][0];
@@ -110,7 +110,7 @@ export default function Timer({ activity, onCancel, reset }: Props) {
   );
 
   if (isSubmitting) {
-    return <Submitting />;
+    return <LoadingScreen message="Saving" />;
   }
 
   const formattedTime = getFormatedTime(time);

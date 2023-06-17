@@ -5,6 +5,7 @@ import Label from "../new-activity/Label";
 import useFormInputFocus from "~/hooks/useFormInputFocus";
 import { api } from "~/utils/api";
 import Submitting from "./submitting";
+import LoadingScreen from "../LoadingScreen";
 
 type Props = {
   title: string;
@@ -49,7 +50,7 @@ export default function ViewSubmission({
     onSubmit({ moodId, description: ref.current.value });
   };
 
-  if (isLoading) return <Submitting />;
+  if (isLoading) return <LoadingScreen message="Submitting" />;
 
   const question = prompt?.message?.content || "what were you up to?";
 

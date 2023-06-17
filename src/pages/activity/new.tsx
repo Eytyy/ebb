@@ -1,14 +1,15 @@
+import type { ChangeEvent } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
+
+import { api } from "~/utils/api";
+
 import NewActivityNav from "~/components/nav/NewActivityNav";
 import CategoryStep from "~/components/new-activity/CategoryStep";
 import NameStep from "~/components/new-activity/NameStep";
 import TypeStep from "~/components/new-activity/TypeStep";
-import Submitting from "~/components/timer/submitting";
-import { api } from "~/utils/api";
-
-import type { ChangeEvent } from "react";
+import LoadingScreen from "~/components/LoadingScreen";
 
 type State = {
   name: string;
@@ -80,7 +81,7 @@ export default function NewActivity() {
   const { step, category, name, type } = state;
 
   if (isLoading || submitting) {
-    return <Submitting />;
+    return <LoadingScreen message="Loading activity" />;
   }
 
   return (
