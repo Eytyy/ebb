@@ -94,10 +94,10 @@ function Btn({
       onDoubleClick={handleDoubleClick}
       variants={BtnVars}
     >
-      <h2 className="mb-2 text-left text-base font-medium">
+      <Circle ref={ref} />
+      <h2 className="mt-2 text-center text-base font-medium capitalize">
         {getShortTitle(name)}
       </h2>
-      <Circle ref={ref} />
     </motion.button>
   );
 }

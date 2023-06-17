@@ -6,11 +6,10 @@ import {
   TopRightBtn,
 } from "./Buttons";
 import { MoodFace } from "../mood";
-import Link from "next/link";
 
 type Props = {
   title: string;
-  time: string;
+  time: number;
   moods?: { id: string; name: string }[];
   submit: (moodId: string) => void;
   cancel: () => void;

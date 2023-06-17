@@ -3,10 +3,13 @@ import { motion, type Variants } from "framer-motion";
 import SubmissionNav from "../nav/SubmissionNav";
 import Label from "../new-activity/Label";
 import useFormInputFocus from "~/hooks/useFormInputFocus";
+import { api } from "~/utils/api";
+import Submitting from "./submitting";
 
 type Props = {
   title: string;
-  time: string;
+  time: number;
+  category: string;
   moods?: { id: string; name: string }[];
   onCancel: () => void;
   onSubmit: ({
@@ -25,17 +28,31 @@ const variants: Variants = {
 
 export default function ViewSubmission({
   title,
+  category,
   moods,
   time,
   onCancel,
   onSubmit,
 }: Props) {
   const { ref } = useFormInputFocus();
+  const { data: prompt, isLoading } = api.gpt.getActivityPrompt.useQuery(
+    {
+      prompt: `${title} - ${category} - ${time}`,
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const submit = (moodId: string) => {
     if (!ref.current) return void 0;
     onSubmit({ moodId, description: ref.current.value });
   };
+
+  if (isLoading) return <Submitting />;
+
+  const question = prompt?.message?.content || "what were you up to?";
+
   return (
     <>
       <SubmissionNav
@@ -52,7 +69,7 @@ export default function ViewSubmission({
           initial="initial"
           animate="animate"
         >
-          <Label id="note">{`What were you up to?`}</Label>
+          <Label id="note">{question}</Label>
           <textarea
             ref={ref}
             id="desc"

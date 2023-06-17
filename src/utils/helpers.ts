@@ -1,19 +1,10 @@
 export const getFormatedTime = (time: number) => {
-  function format(v: number) {
-    return v < 10 ? `0${v}` : v;
-  }
-  const hours = Math.floor(time / 3600);
+  const hours = `${Math.floor(time / 3600)}`.padStart(2, "0");
   const totalSec = time % 3600;
-  const minutes = Math.floor(totalSec / 60);
-  const seconds = totalSec % 60;
+  const minutes = `${Math.floor(totalSec / 60)}`.padStart(2, "0");
+  const seconds = `${totalSec % 60}`.padStart(2, "0");
 
-  return hours === 0
-    ? minutes === 0
-      ? seconds === 0
-        ? `0`
-        : `${format(seconds)}`
-      : `${format(minutes)}:${format(seconds)}`
-    : `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+  return `${hours}:${minutes}:${seconds}`;
 };
 
 export const getPageTitle = (pathname: string) => {

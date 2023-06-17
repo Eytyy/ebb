@@ -40,7 +40,6 @@ export default function NewActivity() {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    console.log(e.target.name, e.target.value);
     setState({ ...state, [e.target.name]: e.target.value });
   };
 

@@ -152,6 +152,7 @@ export default function Timer({ activity, onCancel, reset }: Props) {
         <div className="h-full" key="timer-submission">
           <ViewSubmission
             title={activity.name}
+            category={activity.category.name}
             moods={moods}
             onSubmit={submit}
             onCancel={onCancel}

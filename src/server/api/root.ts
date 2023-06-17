@@ -3,6 +3,7 @@ import { exampleRouter } from "~/server/api/routers/example";
 import { tracksRouter } from "./routers/tracks";
 import { activityRouter } from "./routers/activity";
 import { moodRouter } from "./routers/mood";
+import { gptRouter } from "./routers/gpt";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   tracks: tracksRouter,
   activity: activityRouter,
   mood: moodRouter,
+  gpt: gptRouter,
 });
 
 // export type definition of API

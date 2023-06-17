@@ -31,15 +31,15 @@ model ActivityCategory {
 }
 
 model Activity {
-  id         String            @id @default(cuid())
-  updatedAt  DateTime          @updatedAt
+  id         String           @id @default(cuid())
+  updatedAt  DateTime         @updatedAt
   name       String
   timeLogs   TimeLog[]
   countlogs  Count[]
-  category   ActivityCategory? @relation(fields: [categoryId], references: [id])
-  categoryId String?
+  category   ActivityCategory @relation(fields: [categoryId], references: [id])
+  categoryId String
   tracker    String
-  user       User              @relation(fields: [userId], references: [id])
+  user       User             @relation(fields: [userId], references: [id])
   userId     String
 
   @@unique([name, userId], name: "activityIdentifier")
