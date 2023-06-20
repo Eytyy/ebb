@@ -6,6 +6,7 @@ import {
   TopRightBtn,
 } from "./Buttons";
 import { MoodFace } from "../mood";
+import ToggleButton from "../ToggleButton";
 
 type Props = {
   time: string;
@@ -15,10 +16,18 @@ type Props = {
 };
 
 export default function DistractionNav({ time, moods, submit, close }: Props) {
+  const [state, setState] = React.useState<"note" | "distraction">("note");
+
+  function toggle() {
+    setState((state) => (state === "note" ? "distraction" : "note"));
+  }
+
   return (
     <>
       <TopLeftBtn>
-        <div className="text-background">note</div>
+        <div className="text-background">
+          <ToggleButton onToggle={toggle} value={state} />
+        </div>
       </TopLeftBtn>
       <TopRightBtn>
         <div className="text-background">{time}</div>

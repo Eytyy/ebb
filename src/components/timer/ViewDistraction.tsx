@@ -1,12 +1,11 @@
-import { useCallback, useRef, useMemo } from "react";
-import { type Variants, motion, AnimatePresence } from "framer-motion";
+import { useCallback, useMemo } from "react";
+import { type Variants, motion } from "framer-motion";
 import DistractionNav from "../nav/DistractionNav";
 import Label from "../new-activity/Label";
 import useFormInputFocus from "~/hooks/useFormInputFocus";
-import { getScreenCenter } from "~/utils/dom";
 import InputWrapper from "../new-activity/InputWrapper";
 
-export type DistractionProps = {
+export type NoteProps = {
   start: Date;
   end: Date;
   moodId: string;
@@ -17,7 +16,11 @@ type Props = {
   time: string;
   moods?: { id: string; name: string }[];
   close: () => void;
-  add: (d: DistractionProps) => void;
+  add: (
+    n: NoteProps & {
+      type: "note" | "distraction";
+    }
+  ) => void;
 };
 
 const variants: Variants = {
@@ -30,13 +33,14 @@ export default function ViewDistraction({ time, moods, add, close }: Props) {
   const { ref } = useFormInputFocus();
 
   const onSubmit = useCallback(
-    (moodId: string) => {
+    (moodId: string, type: "note" | "distraction") => {
       if (!ref.current) return void 0;
       add({
         end: new Date(),
         start,
         moodId,
         text: ref.current.value,
+        type,
       });
       close();
     },

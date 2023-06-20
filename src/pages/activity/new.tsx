@@ -30,7 +30,7 @@ export default function NewActivity() {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
 
-  const { data: categories } = api.activity.getCategories.useQuery();
+  const { data: categories } = api.category.get.useQuery();
 
   const { mutate: create, isLoading } = api.activity.create.useMutation({
     onSuccess: () => {

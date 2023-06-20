@@ -2,8 +2,14 @@ import type { Mood, TimeLog } from "@prisma/client";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
-export const tracksRouter = createTRPCRouter({
-  getTimeLogsByDay: protectedProcedure.query(async ({ ctx }) => {
+export const logsRouter = createTRPCRouter({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const logs = await ctx.prisma.timeLog.findMany({
+      take: 10,
+    });
+    return logs;
+  }),
+  getByDay: protectedProcedure.query(async ({ ctx }) => {
     const logs = await ctx.prisma.$queryRaw<
       {
         day: string;
@@ -48,16 +54,43 @@ export const tracksRouter = createTRPCRouter({
 
     return logs;
   }),
-  createTimeLog: protectedProcedure
+  create: protectedProcedure
     .input(
       z.object({
         activityId: z.string(),
-        description: z.string(),
         start: z.date(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const timeLog = await ctx.prisma.timeLog.create({
+        data: {
+          start: input.start,
+          userId: ctx.session.user.id,
+          activityId: input.activityId,
+        },
+      });
+      return {
+        sessionId: timeLog.id,
+        start: timeLog.start,
+      };
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        description: z.string(),
         end: z.date(),
-        timeLogType: z.string().optional(),
         moodId: z.string(),
         distractions: z.array(
+          z.object({
+            start: z.date(),
+            end: z.date(),
+            text: z.string(),
+            moodId: z.string(),
+          })
+        ),
+        notes: z.array(
           z.object({
             start: z.date(),
             end: z.date(),
@@ -68,20 +101,54 @@ export const tracksRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.timeLog.create({
+      return ctx.prisma.timeLog.update({
+        where: {
+          id: input.id,
+        },
         data: {
           description: input.description,
-          activityId: input.activityId,
-          start: input.start,
           end: input.end,
-          userId: ctx.session.user.id,
           moodId: input.moodId,
           distractions: {
             createMany: {
               data: input.distractions,
             },
           },
+          notes: {
+            createMany: {
+              data: input.notes,
+            },
+          },
         },
       });
     }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.timeLog.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+  getActiveSession: protectedProcedure.query(async ({ ctx }) => {
+    const timeLog = await ctx.prisma.timeLog.findFirst({
+      select: {
+        id: true,
+        start: true,
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            category: true,
+          },
+        },
+      },
+      where: {
+        userId: ctx.session.user.id,
+        end: null,
+      },
+    });
+    return timeLog;
+  }),
 });

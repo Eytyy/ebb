@@ -1,10 +1,10 @@
 import { api, type RouterOutputs } from "~/utils/api";
 import { MoodAvatar } from "../mood";
 
-type TimeLog = RouterOutputs["tracks"]["getTimeLogsByDay"][number];
+type TimeLog = RouterOutputs["logs"]["getByDay"][0];
 
 export default function TimerList() {
-  const { data } = api.tracks.getTimeLogsByDay.useQuery();
+  const { data } = api.logs.getByDay.useQuery();
 
   return (
     <div className="w-full">

@@ -1,39 +1,54 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 
 import { initialState, reducer } from "~/store/timer";
-import { type RouterOutputs, api } from "~/utils/api";
+import { api } from "~/utils/api";
 import { getFormatedTime } from "~/utils/helpers";
 
 import TimerNav from "../nav/TimerNav";
 import ViewSubmission from "./ViewSubmission";
 import ViewMain from "./ViewMain";
-import ViewDistraction, { type DistractionProps } from "./ViewDistraction";
+import ViewDistraction, { type NoteProps } from "./ViewDistraction";
 import { useApp } from "~/context/app";
 import { AnimatePresence } from "framer-motion";
 import LoadingScreen from "../LoadingScreen";
 
-type Props = {
-  activity: RouterOutputs["activity"]["getAll"][0];
-  onCancel: () => void;
-  reset: () => void;
-};
+/**
+ * get start time from the active session and set the timer to the difference between the start time and now
+ * if the timer is stopped, set the timer to 0, and update the session with the end time
+ * if the timer is canceled or the user navigates away from the timer, set the timer to 0, delete the session, and set session to null
+ */
 
-export default function Timer({ activity, onCancel, reset }: Props) {
+function calculateTime(start?: Date) {
+  const now = new Date();
+  const difference = start ? now.getTime() - start.getTime() : 0;
+  const differenceInMins = Math.round(difference / 1000);
+  return differenceInMins;
+}
+
+export default function Timer() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { dispatch: appDispatch } = useApp();
-
+  const { state: appState, dispatch: appDispatch } = useApp();
   const { data: moods } = api.mood.getAll.useQuery();
 
-  const { mutate, isLoading: isSubmitting } =
-    api.tracks.createTimeLog.useMutation({
-      onSuccess: () => reset(),
-    });
+  const { activeSession } = appState;
+  const { end, distractions, notes } = state;
+
+  const {
+    mutate: updateSession,
+    isLoading: isSubmitting,
+    isError,
+  } = api.logs.update.useMutation({
+    onSuccess: () => {
+      appDispatch({ type: "END_SESSION" });
+    },
+  });
+  const { mutate: deleteSession } = api.logs.delete.useMutation();
 
   // using web workers to handle the timer
   const worker = useRef<Worker>();
-
   // start timer on mount and stop on unmount (cleanup)
   useEffect(() => {
+    const timerValue = calculateTime(appState.activeSession?.start);
     // create new web worker instance for the timer
     worker.current = new Worker(
       new URL("../../workers/timer.ts", import.meta.url)
@@ -53,34 +68,45 @@ export default function Timer({ activity, onCancel, reset }: Props) {
     };
 
     // start timer
-    worker.current.postMessage({ action: "start" });
     dispatch({
-      type: "SET_START",
-      payload: new Date(),
+      type: "START_TIMER",
+      payload: timerValue,
     });
-    appDispatch({
-      type: "SET_POS",
-      payload: {
-        x: 0,
-        y: 0,
-      },
-    });
+
+    worker.current.postMessage({ action: "start" });
 
     return () => {
       // terminate worker on cleanup
       worker.current?.terminate();
     };
-  }, [appDispatch]);
+  }, [appDispatch, dispatch, appState]);
 
   // handle timer session completion
   const onDone = useCallback(() => {
     worker.current?.postMessage({ action: "stop" });
-    dispatch({ type: "SET_END", payload: new Date() });
+    dispatch({ type: "STOP_TIMER", payload: new Date() });
   }, []);
 
-  const addDistraction = useCallback((props: DistractionProps) => {
-    dispatch({ type: "ADD_DISTRACTION", payload: props });
-  }, []);
+  const addNote = useCallback(
+    (
+      props: NoteProps & {
+        type: "distraction" | "note";
+      }
+    ) => {
+      dispatch({ type: "ADD_NOTE", payload: props });
+    },
+    []
+  );
+
+  const onCancel = useCallback(() => {
+    const activeSession = appState.activeSession;
+    if (!activeSession || !activeSession.id) return void 0;
+    worker.current?.postMessage({ action: "stop" });
+    deleteSession({
+      id: activeSession.id,
+    });
+    appDispatch({ type: "END_SESSION" });
+  }, [appDispatch, appState, deleteSession]);
 
   const { time, view } = state;
 
@@ -93,26 +119,26 @@ export default function Timer({ activity, onCancel, reset }: Props) {
 
   const submit = useCallback(
     ({ description, moodId }: { description?: string; moodId: string }) => {
-      const { start, end, distractions } = state;
-
-      if (!start || !end || !activity) return void 0;
-
-      mutate({
-        activityId: activity.id,
-        description: description || "",
-        start,
+      if (!activeSession || !activeSession.id || !end) return void 0;
+      updateSession({
+        id: activeSession.id,
         end,
+        description: description || "",
         moodId,
-        distractions: distractions || [],
+        distractions,
+        notes,
       });
     },
-    [state, mutate, activity]
+    [activeSession, end, distractions, notes, updateSession]
   );
 
   if (isSubmitting) {
     return <LoadingScreen message="Saving" />;
   }
 
+  if (!activeSession) return null;
+
+  const { activity } = activeSession;
   const formattedTime = getFormatedTime(time);
 
   return (
@@ -120,7 +146,7 @@ export default function Timer({ activity, onCancel, reset }: Props) {
       {view === "default" && (
         <div className="h-full" key="timer-main">
           <TimerNav
-            title={activity.name}
+            title={activeSession.activity.name}
             onDone={onDone}
             onCancel={onCancel}
             time={formattedTime}
@@ -142,7 +168,7 @@ export default function Timer({ activity, onCancel, reset }: Props) {
             <ViewDistraction
               moods={moods}
               time={formattedTime}
-              add={addDistraction}
+              add={addNote}
               close={closeDistraction}
             />
           )}
@@ -157,6 +183,7 @@ export default function Timer({ activity, onCancel, reset }: Props) {
             onSubmit={submit}
             onCancel={onCancel}
             time={formattedTime}
+            onError={isError}
           />
         </div>
       )}

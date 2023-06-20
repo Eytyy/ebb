@@ -6,7 +6,7 @@ import { calculateDuration } from "~/utils/helpers";
 type Props = (RouterOutputs["activity"]["getById"] &
   TimeLog)["timeLogs"][number];
 
-export default function LogItem(timeLog: Props) {
+export default function TimerActivityLogItem(timeLog: Props) {
   return (
     <div className="flex justify-between rounded-lg bg-foreground p-4 text-background shadow-md">
       <div className="font-bold">{timeLog.description}</div>

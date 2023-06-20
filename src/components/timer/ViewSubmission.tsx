@@ -1,17 +1,16 @@
-import { useRef } from "react";
 import { motion, type Variants } from "framer-motion";
 import SubmissionNav from "../nav/SubmissionNav";
 import Label from "../new-activity/Label";
 import useFormInputFocus from "~/hooks/useFormInputFocus";
 import { api } from "~/utils/api";
-import Submitting from "./submitting";
 import LoadingScreen from "../LoadingScreen";
 
 type Props = {
   title: string;
-  time: number;
+  time: string;
   category: string;
   moods?: { id: string; name: string }[];
+  onError: boolean;
   onCancel: () => void;
   onSubmit: ({
     description,
@@ -34,15 +33,12 @@ export default function ViewSubmission({
   time,
   onCancel,
   onSubmit,
+  onError,
 }: Props) {
   const { ref } = useFormInputFocus();
   const { data: prompt, isLoading } = api.gpt.getActivityPrompt.useQuery(
-    {
-      prompt: `${title} - ${category} - ${time}`,
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
+    { prompt: `${title} - ${category} - ${time}` },
+    { refetchOnWindowFocus: false }
   );
 
   const submit = (moodId: string) => {
@@ -50,12 +46,15 @@ export default function ViewSubmission({
     onSubmit({ moodId, description: ref.current.value });
   };
 
-  if (isLoading) return <LoadingScreen message="Submitting" />;
+  if (isLoading) return <LoadingScreen message="Saving" />;
 
   const question = prompt?.message?.content || "what were you up to?";
 
   return (
     <>
+      {onError && (
+        <div className="text-4xl">there was an Error! please try again!</div>
+      )}
       <SubmissionNav
         submit={submit}
         cancel={onCancel}

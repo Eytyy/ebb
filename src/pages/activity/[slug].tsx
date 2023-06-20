@@ -1,6 +1,5 @@
 import React from "react";
-import ActivityNav from "~/components/nav/ActivityNav";
-import LogItem from "~/components/timer/LogItem";
+import TimerActivity from "~/components/activity/TimerActivity";
 import { requireAuth } from "~/requireAuth";
 import { api } from "~/utils/api";
 
@@ -17,16 +16,12 @@ export default function Activity({ slug }: Props) {
     return null;
   }
 
-  return (
-    <>
-      <ActivityNav title={activity.name} />
-      <main className={`mx-auto h-full max-w-5xl space-y-4 px-24`}>
-        {activity.timeLogs.map((timeLog) => {
-          return <LogItem key={timeLog.id} {...timeLog} />;
-        })}
-      </main>
-    </>
-  );
+  switch (activity.tracker) {
+    case "timer":
+      return <TimerActivity activity={activity} />;
+    default:
+      return <div> no suitable activity </div>;
+  }
 }
 
 export const getServerSideProps = requireAuth(async (ctx) => {

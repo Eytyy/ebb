@@ -1,9 +1,10 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { exampleRouter } from "~/server/api/routers/example";
-import { tracksRouter } from "./routers/tracks";
+import { logsRouter } from "./routers/logs";
 import { activityRouter } from "./routers/activity";
 import { moodRouter } from "./routers/mood";
 import { gptRouter } from "./routers/gpt";
+import { categoryRouter } from "./routers/category";
 
 /**
  * This is the primary router for your server.
@@ -12,8 +13,9 @@ import { gptRouter } from "./routers/gpt";
  */
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
-  tracks: tracksRouter,
+  logs: logsRouter,
   activity: activityRouter,
+  category: categoryRouter,
   mood: moodRouter,
   gpt: gptRouter,
 });

@@ -11,11 +11,30 @@ datasource db {
 }
 
 model Mood {
-  id          String        @id @default(cuid())
-  name        String
-  Distraction Distraction[]
-  timeLogs    TimeLog[]
-  countlogs   Count[]
+  id           String        @id @default(cuid())
+  name         String
+  distractions Distraction[]
+  timeLogs     TimeLog[]
+  countlogs    Count[]
+  notes        Note[]
+}
+
+model TimeLog {
+  id           String        @id @default(cuid())
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  start        DateTime
+  end          DateTime?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  timeLogType  String        @default("timer")
+  mood         Mood?         @relation(fields: [moodId], references: [id])
+  moodId       String?
+  activity     Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId   String
+  distractions Distraction[]
+  notes        Note[]
 }
 
 model ActivityCategory {
@@ -24,7 +43,7 @@ model ActivityCategory {
   updatedAt  DateTime   @updatedAt
   name       String
   activities Activity[]
-  user       User       @relation(fields: [userId], references: [id])
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
 
   @@unique([name, userId], name: "activityCategoryIdentifier")
@@ -39,27 +58,10 @@ model Activity {
   category   ActivityCategory @relation(fields: [categoryId], references: [id])
   categoryId String
   tracker    String
-  user       User             @relation(fields: [userId], references: [id])
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
 
   @@unique([name, userId], name: "activityIdentifier")
-}
-
-model TimeLog {
-  id           String        @id @default(cuid())
-  description  String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  start        DateTime
-  end          DateTime
-  user         User          @relation(fields: [userId], references: [id])
-  userId       String
-  distractions Distraction[]
-  timeLogType  String        @default("timer")
-  mood         Mood          @relation(fields: [moodId], references: [id])
-  moodId       String
-  activity     Activity      @relation(fields: [activityId], references: [id])
-  activityId   String
 }
 
 model Count {
@@ -76,15 +78,29 @@ model Count {
 }
 
 model Distraction {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  text      String   @unique
-  start     DateTime
-  end       DateTime
-  moodId    String
-  mood      Mood     @relation(fields: [moodId], references: [id])
-  timeLog   TimeLog? @relation(fields: [timeLogId], references: [id])
-  timeLogId String?
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  text          String   @unique
+  start         DateTime
+  end           DateTime
+  moodId        String
+  mood          Mood     @relation(fields: [moodId], references: [id])
+  timeLog       TimeLog? @relation(fields: [timeLogId], references: [id], onDelete: Cascade)
+  timeLogId     String?
+  sessionTestId String?
+}
+
+model Note {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  text          String   @unique
+  start         DateTime
+  end           DateTime
+  moodId        String
+  mood          Mood     @relation(fields: [moodId], references: [id])
+  timeLog       TimeLog? @relation(fields: [timeLogId], references: [id], onDelete: Cascade)
+  timeLogId     String?
+  sessionTestId String?
 }
 
 // Necessary for Next auth

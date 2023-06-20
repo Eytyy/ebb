@@ -1,4 +1,4 @@
-import { type DistractionProps } from "~/components/timer/ViewDistraction";
+import { type NoteProps } from "~/components/timer/ViewDistraction";
 
 const views = ["default", "distraction", "submission"] as const;
 export type TimerViews = (typeof views)[number];
@@ -6,10 +6,11 @@ export type TimerViews = (typeof views)[number];
 export type InitialState = {
   view: TimerViews;
   time: number;
+  start?: Date;
+  end?: Date;
   description: string;
-  start: Date | null;
-  end: Date | null;
-  distractions: DistractionProps[];
+  distractions: NoteProps[];
+  notes: NoteProps[];
   moodId?: string;
   areaId?: string;
 };
@@ -18,48 +19,56 @@ export const initialState: InitialState = {
   view: "default",
   time: 0,
   description: "",
-  start: null,
-  end: null,
   distractions: [],
+  notes: [],
 };
 
-type SetEndAction = {
-  type: "SET_END";
+type START_TIMER_ACTION = {
+  type: "START_TIMER";
+  payload: number;
+};
+
+type STOP_TIMER_ACTION = {
+  type: "STOP_TIMER";
   payload: Date;
 };
 
-type AddDistractionAction = {
-  type: "ADD_DISTRACTION";
-  payload: DistractionProps;
+type UPDATE_TIME_ACTION = {
+  type: "UPDATE_TIME";
 };
 
-type ViewAction = {
+type SWITCH_VIEW_ACTION = {
   type: "SWITCH_VIEW";
   payload: TimerViews;
 };
 
-type TimeAction = {
-  type: "UPDATE_TIME";
-};
-
-type SetStartAction = {
-  type: "SET_START";
-  payload: Date;
+type ADD_NOTE_ACTION = {
+  type: "ADD_NOTE";
+  payload: NoteProps & {
+    type: "distraction" | "note";
+  };
 };
 
 type Actions =
-  | ViewAction
-  | TimeAction
-  | SetStartAction
-  | SetEndAction
-  | AddDistractionAction;
+  | START_TIMER_ACTION
+  | STOP_TIMER_ACTION
+  | UPDATE_TIME_ACTION
+  | SWITCH_VIEW_ACTION
+  | ADD_NOTE_ACTION;
 
 export const reducer = (state = initialState, action: Actions) => {
   switch (action.type) {
-    case "SET_START": {
+    case "START_TIMER": {
       return {
         ...state,
-        start: action.payload,
+        time: action.payload,
+      };
+    }
+    case "STOP_TIMER": {
+      return {
+        ...state,
+        end: action.payload,
+        view: "submission" as TimerViews,
       };
     }
     case "UPDATE_TIME": {
@@ -74,17 +83,14 @@ export const reducer = (state = initialState, action: Actions) => {
         view: action.payload,
       };
     }
-    case "SET_END": {
+    case "ADD_NOTE": {
+      const { type, ...rest } = action.payload;
       return {
         ...state,
-        view: "submission" as TimerViews,
-        end: action.payload,
-      };
-    }
-    case "ADD_DISTRACTION": {
-      return {
-        ...state,
-        distractions: [...state.distractions, action.payload],
+        [type === "distraction" ? "distractions" : "notes"]: [
+          ...state[type === "distraction" ? "distractions" : "notes"],
+          rest,
+        ],
       };
     }
     default:

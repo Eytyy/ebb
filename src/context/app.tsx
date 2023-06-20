@@ -4,10 +4,19 @@ import React, {
   useReducer,
 } from "react";
 
-const initialState = {
-  pos: null,
-  isNavOpen: false,
+type TimeLogSession = {
+  activity: {
+    id: string;
+    name: string;
+    category: {
+      id: string;
+      name: string;
+    };
+  };
+  id?: string;
+  start: Date;
 };
+type DashboardView = "dashboard" | "timerSession" | "new" | "onboarding";
 
 type SetPos = {
   type: "SET_POS";
@@ -19,7 +28,28 @@ type ToggleMenu = {
   payload?: boolean;
 };
 
+type SetView = {
+  type: "SET_VIEW";
+  payload: DashboardView;
+};
+
+type StartSession = {
+  type: "START_SESSION";
+  payload: TimeLogSession;
+};
+
+type SetActiveSession = {
+  type: "SET_ACTIVE_SESSION";
+  payload: TimeLogSession | null;
+};
+
+type EndSession = {
+  type: "END_SESSION";
+};
+
 type InitialState = {
+  view: DashboardView;
+  activeSession: TimeLogSession | null;
   isNavOpen: boolean;
   pos: {
     x: number;
@@ -27,7 +57,20 @@ type InitialState = {
   } | null;
 };
 
-type Actions = SetPos | ToggleMenu;
+type Actions =
+  | SetView
+  | StartSession
+  | SetActiveSession
+  | EndSession
+  | SetPos
+  | ToggleMenu;
+
+const initialState: InitialState = {
+  view: "dashboard",
+  activeSession: null,
+  isNavOpen: false,
+  pos: null,
+};
 
 const Context = React.createContext<{
   state: InitialState;
@@ -39,6 +82,29 @@ const Context = React.createContext<{
 
 const reducer = (state: InitialState = initialState, action: Actions) => {
   switch (action.type) {
+    case "SET_VIEW": {
+      return { ...state, view: action.payload };
+    }
+    case "START_SESSION": {
+      return {
+        ...state,
+        view: "timerSession" as DashboardView,
+      };
+    }
+    case "SET_ACTIVE_SESSION": {
+      return {
+        ...state,
+        view: "timerSession" as DashboardView,
+        activeSession: action.payload,
+      };
+    }
+    case "END_SESSION": {
+      return {
+        ...state,
+        view: "dashboard" as DashboardView,
+        activeSession: null,
+      };
+    }
     case "SET_POS":
       return { ...state, pos: action.payload };
     case "TOGGLE_MENU": {
@@ -53,10 +119,7 @@ const reducer = (state: InitialState = initialState, action: Actions) => {
 };
 
 export default function AppProvider({ children }: PropsWithChildren) {
-  const [state, dispatch] = useReducer(reducer, {
-    pos: null,
-    isNavOpen: false,
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
     <Context.Provider

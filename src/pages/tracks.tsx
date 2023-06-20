@@ -3,7 +3,7 @@ import { requireAuth } from "~/requireAuth";
 import { api } from "~/utils/api";
 
 export default function Tracks() {
-  const { data } = api.tracks.getAll.useQuery(undefined, {
+  const { data } = api.logs.getAll.useQuery(undefined, {
     staleTime: Infinity,
   });
   return (

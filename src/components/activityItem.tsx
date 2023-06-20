@@ -3,25 +3,22 @@ import { useRouter } from "next/router";
 import React, { forwardRef } from "react";
 import { useApp } from "~/context/app";
 
-import { type RouterOutputs } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import { getShortTitle } from "~/utils/helpers";
 
 type Activity = RouterOutputs["activity"]["getAll"][number];
 
 type Props = {
   activity: Activity;
-  startTimer: () => void;
 };
 
-export default function ActivityItem({ activity, startTimer }: Props) {
+export default function ActivityItem({ activity }: Props) {
   switch (activity.tracker) {
     case "timer": {
-      return <Btn id={activity.id} name={activity.name} onClick={startTimer} />;
+      return <TimerActivityItem activity={activity} />;
     }
     case "counter": {
-      return (
-        <Btn id={activity.id} name={activity.name} onClick={() => void 0} />
-      );
+      return <CounterActivityItem activity={activity} />;
     }
     default: {
       return null;
@@ -41,14 +38,57 @@ const BtnVars: Variants = {
   },
 };
 
+function TimerActivityItem({ activity }: Props) {
+  const { dispatch } = useApp();
+  const { mutateAsync } = api.logs.create.useMutation();
+
+  const startTimer = React.useCallback(async () => {
+    const start = new Date();
+
+    dispatch({
+      type: "START_SESSION",
+      payload: {
+        activity: {
+          id: activity.id,
+          name: activity.name,
+          category: activity.category,
+        },
+        start,
+      },
+    });
+    const timelog = await mutateAsync({
+      activityId: activity.id,
+      start,
+    });
+    dispatch({
+      type: "SET_ACTIVE_SESSION",
+      payload: {
+        id: timelog.sessionId,
+        start: timelog.start,
+        activity: {
+          id: activity.id,
+          name: activity.name,
+          category: activity.category,
+        },
+      },
+    });
+  }, [activity, dispatch, mutateAsync]);
+
+  return <Btn id={activity.id} name={activity.name} onClick={startTimer} />;
+}
+
+function CounterActivityItem({ activity }: Props) {
+  return <Btn id={activity.id} name={activity.name} />;
+}
+
 function Btn({
   id,
-  onClick,
+  onClick = () => void 0,
   name,
 }: {
   id: string;
   name: string;
-  onClick: () => void;
+  onClick?: () => Promise<void> | void;
 }) {
   const { dispatch } = useApp();
   const router = useRouter();
@@ -79,7 +119,7 @@ function Btn({
       if (e.detail === 1) {
         timeout.current = setTimeout(() => {
           updatePos();
-          onClick();
+          void onClick();
         }, 200);
       }
     },
